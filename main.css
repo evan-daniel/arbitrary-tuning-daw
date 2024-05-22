@@ -1,0 +1,130 @@
+
+/* GLOBAL */
+
+:root {
+    box-sizing: border-box; 
+}
+
+::before, 
+*, 
+::after {
+    box-sizing: inherit; 
+    margin: 0; 
+    padding: 0; 
+    
+    background-position: center, center, center; 
+    background-repeat: no-repeat, no-repeat, no-repeat; 
+    background-size: cover, cover, cover; 
+    user-select: none;
+    touch-action: none;
+}
+
+body {
+    font-family: 'Futura', 'Helvetica', sans-serif; 
+}
+
+a {
+    text-decoration: none; 
+}
+
+/* CONTROLS */
+
+.controls {
+    z-index: 2; 
+    position: fixed; 
+    top: 0; 
+
+    background-color: #FFF; 
+}
+
+/* PLAY BUTTON */
+
+.play-button {
+    height: 2.4rem; 
+    width: 100vw; 
+    
+    font-size: 2.4rem; 
+    
+    cursor: pointer; 
+    border-bottom: 1px solid #000; 
+    
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+/* PIANO */
+
+.piano {
+    display: flex; 
+}
+
+.piano .key {
+    height: 2.4rem; 
+    width: 100%; 
+
+    transition: 0.166s background-color; 
+    border: 1px solid #000; 
+}
+
+.piano .key:nth-of-type(12n + 12), 
+.piano .key:nth-of-type(12n + 10), 
+.piano .key:nth-of-type(12n + 7), 
+.piano .key:nth-of-type(12n + 5), 
+.piano .key:nth-of-type(12n + 5), 
+.piano .key:nth-of-type(12n + 2) {
+    --key-width: calc(100% / 52); 
+    --half-key-width: calc(100% / 104); 
+    
+    background-color: #000; 
+}
+
+.piano .key:hover {
+    background-color: #00F; 
+}
+
+/* TIMELINE */
+
+.timeline {
+    position: absolute; 
+}
+
+.measure {
+    height: 8rem; 
+    width: 100vw; 
+    
+    border: 1px solid #000; 
+
+    display: flex; 
+    flex-direction: column; 
+}
+
+.sixteenth {
+    height: 100%; 
+
+    display: flex; 
+}
+
+.sixteenth:nth-of-type(4n) {
+    border-bottom: 1px solid #888; 
+}
+
+/* CELL */
+
+.cell {
+    height: 100%; 
+    width: 100%; 
+}
+
+.cell:nth-of-type(12n + 12), 
+.cell:nth-of-type(12n + 10), 
+.cell:nth-of-type(12n + 7), 
+.cell:nth-of-type(12n + 5), 
+.cell:nth-of-type(12n + 5), 
+.cell:nth-of-type(12n + 2) {
+    background-color: #EEE; 
+}
+
+.cell[data-active = "true"] {
+    background-color: #AAF; 
+}
