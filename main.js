@@ -1,9 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
     
-    // INIT 
-    
-    const channel = []; 
-    
     // KEYBOARD 
 
     const piano = document.querySelector('.piano'); 
@@ -32,9 +28,9 @@ window.addEventListener('DOMContentLoaded', () => {
             for(let k = 0; k < 88; ++k) {
                 const cell = document.createElement('div'); 
                 cell.classList.add('cell'); 
-                cell.setAttribute('data-cell-measure', i); 
-                cell.setAttribute('data-cell-sixteenth', j); 
-                cell.setAttribute('data-cell-key', k); 
+                cell.setAttribute('data-measure', i); 
+                cell.setAttribute('data-sixteenth', j); 
+                cell.setAttribute('data-key', k); 
                 cell.setAttribute('data-active', 'false'); 
                 sixteenth.appendChild(cell); 
             }
@@ -44,7 +40,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // ACTIVATE NOTE
 
     const activate_note = mouseEvent => {
-        console.log('MOUSE', mouseEvent); 
         if(mouseEvent.buttons === 1) {
             mouseEvent.target.setAttribute('data-active', !mouseEvent.metaKey); 
         }
@@ -55,9 +50,45 @@ window.addEventListener('DOMContentLoaded', () => {
     // PLAY BUTTON
     
     let is_playing = false; 
+    let timestamp_offset = 0; 
     const playButton = document.querySelector('.play-button'); 
     playButton.addEventListener('click', () => {
         is_playing = !is_playing; 
         playButton.innerText = is_playing ? '⏸' : '▶'; 
+
+        if(is_playing) {
+            console.log('IS PLAYING'); 
+            timestamp_offset = document.timeline.currentTime; 
+            window.requestAnimationFrame(play); 
+        } else {
+            console.log('!IS PLAYING'); 
+        }
     }); 
+
+    // PLAY 
+    
+    let channel = []; 
+
+    const play = () => {
+        const timestamp = document.timeline.currentTime - timestamp_offset; 
+        
+        const measure = Math.floor(timestamp / 1000); 
+        const sixteenth = Math.floor(timestamp % 1000 / 1000 * 16); 
+        const notes = document.querySelectorAll(`.cell[data-measure = "${measure}"][data-sixteenth = "${sixteenth}"][data-active = "true"]`); 
+        if(sixteenth === 0) {
+            // console.log('BEAT', measure, sixteenth); 
+        }
+        
+        const keys = Array.from(notes).map(note => +note.dataset.key); 
+        const on_keys = keys.filter(k => !channel.includes(k)); 
+        const off_keys = channel.filter(k => !keys.includes(k)); 
+        if(keys.length || off_keys.length) {
+            console.log('BEAT', keys, on_keys, off_keys); 
+        }
+        channel = keys; 
+        
+        if(is_playing) {
+            window.requestAnimationFrame(play); 
+        }
+    }; 
 })
