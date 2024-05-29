@@ -24,7 +24,7 @@ class Note {
     }
         
     turn_off = () => {
-        console.log(`NOTE ENDED: ID: ${id}, PITCH: ${pitch}`); 
+        console.log(`NOTE ENDED: ID: ${this.id}, PITCH: ${this.pitch}`); 
         
         this.velocity = 0; 
         this.gain.gain.setTargetAtTime(this.velocity, this.context.currentTime + 0.05, 0.05); 

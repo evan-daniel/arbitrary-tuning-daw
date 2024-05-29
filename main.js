@@ -1,4 +1,23 @@
+import Note from './Note.js'; 
+
+// MAIN 
+
 window.addEventListener('DOMContentLoaded', () => {
+    
+    // INIT 
+
+    const context = new AudioContext(); 
+    let base = 12; 
+
+    // NOTE IDX TO PITCH CONVENIENCE FUNCTION 
+
+    const idx_to_pitch = idx => {
+        const octave = Math.floor(idx / 12); 
+        if(base <= idx % 12) {
+            return 0; 
+        }
+        return 27.5 * Math.pow(2, octave + idx % 12 / base)
+    }
     
     // KEYBOARD 
 
@@ -68,27 +87,60 @@ window.addEventListener('DOMContentLoaded', () => {
     // PLAY 
     
     let channel = []; 
+    let rebeat = false; 
 
     const play = () => {
         const timestamp = document.timeline.currentTime - timestamp_offset; 
+
+        // GET THE NOTES FROM THE TIMELINE 
         
         const measure = Math.floor(timestamp / 1000); 
         const sixteenth = Math.floor(timestamp % 1000 / 1000 * 16); 
         const notes = document.querySelectorAll(`.cell[data-measure = "${measure}"][data-sixteenth = "${sixteenth}"][data-active = "true"]`); 
-        if(sixteenth === 0) {
-            // console.log('BEAT', measure, sixteenth); 
-        }
+        const timeline_note_ids = Array.from(notes).map(note => +note.dataset.key); 
+        const channel_note_ids = channel.map(note => note.id); 
+
+        // SET NOTES ON AND OFF 
         
-        const keys = Array.from(notes).map(note => +note.dataset.key); 
-        const on_keys = keys.filter(k => !channel.includes(k)); 
-        const off_keys = channel.filter(k => !keys.includes(k)); 
-        if(keys.length || off_keys.length) {
-            console.log('BEAT', keys, on_keys, off_keys); 
+        const on_keys = timeline_note_ids.filter(k => !channel_note_ids.includes(k)); 
+        const off_notes = channel.filter(k => !timeline_note_ids.includes(k.id)); 
+
+        for(let k of on_keys) {
+            const pitch = idx_to_pitch(k); 
+            if(pitch !== 0) {
+                channel.push(new Note(context, k, pitch)); 
+            }
+        } 
+        for(let k of off_notes) {
+            k.turn_off(); 
+            channel = channel.filter(note => note.id !== k.id); 
         }
-        channel = keys; 
+
+        // PRINTING 
+        
+        if(sixteenth === 0) {
+            if(!rebeat) {
+                rebeat = true; 
+                console.log('BEAT', measure, sixteenth, channel); 
+            }
+        } else {
+            rebeat = false; 
+        }
+
+        // LOOP 
         
         if(is_playing) {
             window.requestAnimationFrame(play); 
         }
     }; 
+
+    // CHANGE THE BASE 
+
+    document.querySelector('.base-interface').addEventListener('change', change => {
+        base = +change.target.value; 
+
+        for(let cell of document.querySelectorAll('.cell')) {
+            cell.dataset.offBase = base <= +cell.dataset.key % 12; 
+        }
+    })
 })

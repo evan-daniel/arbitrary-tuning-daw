@@ -53,6 +53,13 @@ a {
     align-items: center; 
 }
 
+/* BASE INTERFACE */
+
+.base-interface {
+    padding: 0.6rem; 
+    line-height: 3.6; 
+}
+
 /* PIANO */
 
 .piano {
@@ -129,4 +136,8 @@ a {
 
 .cell[data-active = "true"] {
     background-color: #AAF; 
+}
+
+.cell[data-off-base = "true"] {
+    background-color: #BBB; 
 }
