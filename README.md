@@ -1,4 +1,4 @@
-# Non-Western DAW
+# Arbitrary Tuning DAW 
 
 Digital Audio Workstation (DAW) with support for bases other than 12.  
 
