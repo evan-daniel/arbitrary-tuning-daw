@@ -1,0 +1,70 @@
+
+/* GLOBAL */
+
+:root {
+    box-sizing: border-box; 
+}
+
+::before, 
+*, 
+::after {
+    box-sizing: inherit; 
+    margin: 0; 
+    padding: 0; 
+    
+    background-position: center, center, center; 
+    background-repeat: no-repeat, no-repeat, no-repeat; 
+    background-size: cover, cover, cover; 
+    user-select: none;
+    touch-action: none;
+}
+
+body {
+    font-family: 'Futura', 'Helvetica', sans-serif; 
+}
+
+a {
+    text-decoration: none; 
+}
+
+/* PIANO */
+
+.piano {
+    --half-key-width: calc(100% / 104); 
+    --key-width: calc(100% / 52); 
+    
+    position: relative; 
+}
+
+.piano .key {
+    position: relative; 
+    z-index: 1; 
+    display: inline-block; 
+    height: 7.2rem; 
+    width: var(--key-width); 
+
+    background-color: #FFF;
+    
+    transition: 0.166s background-color; 
+    border: 1px solid #000; 
+}
+
+.piano .key:nth-of-type(12n + 12), 
+.piano .key:nth-of-type(12n + 10), 
+.piano .key:nth-of-type(12n + 7), 
+.piano .key:nth-of-type(12n + 5), 
+.piano .key:nth-of-type(12n + 5), 
+.piano .key:nth-of-type(12n + 2) {
+    height: 6rem; 
+    width: var(--half-key-width); 
+    margin: 0 calc(-0.5 * var(--half-key-width)) 1.2rem; 
+    z-index: 100;
+    
+    background-color: #000; 
+    
+    /* display: none;  */
+}
+
+.piano .key[data-active = "true"] {
+    background-color: #0F0; 
+}
